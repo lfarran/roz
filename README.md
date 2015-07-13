@@ -6,7 +6,7 @@ Install Instructions
  
    1. Install the NodeJS JavaScript runtime (https://nodejs.org/) to utilize the npm command-line utility to aid in package dependency installation. 
 
-   On Windows installation location: C:/Program Files/nodejs/node_modules. 
+   Windows installation location: C:/Program Files/nodejs/node_modules. 
    Mac installation location: /usr/local/lib/node_modules
 
    2. Confirm NodeJS / npm installation.  From the terminal, do "npm --version" and then "node --version".

@@ -1,0 +1,36 @@
+{
+  "name": "raisedOnZenith",
+  "version": "0.0.0",
+  "authors": [
+    "Luke Farran"
+  ],
+  "description": "Personal website that utilizes AngularJS, Gulp, Bower, Bootstrap, and SASS",
+  "keywords": [
+    "Luke Farran",
+    "AngularJS",
+    "Bower",
+    "Bootstrap",
+    "SASS"
+  ],
+  "license": "MIT",
+  "homepage": "lukefarran.com",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "devDependencies": {
+    "angular": "~1.4.1",
+    "angular-sanitize": "~1.4.1",
+    "angular-touch": "~1.4.1",
+    "bootstrap-sass": "~3.3.4",
+    "fontawesome": "~4.3.0",
+    "jquery.easing": "~1.3.1",
+    "jqBootstrapValidation": "~1.3.7",
+    "classie": "~1.0.1"
+  },
+  "dependencies": {
+  }
+}
