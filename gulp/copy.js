@@ -11,16 +11,16 @@ gulp.task('copy-index-html', function() {
     .pipe(gulp.dest('./dist'));
 });
 
-gulp.task('copy-angular', function() {
-  gulp.src(['./bower_components/angular/angular.min.js'])
-    .pipe(gulp.dest('./dist/js'));
-  gulp.src(['./bower_components/angular-animate/angular-animate.min.js'])
-    .pipe(gulp.dest('./dist/js'));
-  gulp.src(['./bower_components/angular-loading-bar/build/loading-bar.min.js'])
-    .pipe(gulp.dest('./dist/js'));
-  gulp.src(['./bower_components/angular-loading-bar/build/loading-bar.min.css'])
-    .pipe(gulp.dest('./dist/css'));
-});
+//gulp.task('copy-angular', function() {
+//  gulp.src(['./bower_components/angular/angular.min.js'])
+//    .pipe(gulp.dest('./dist/js'));
+//  gulp.src(['./bower_components/angular-animate/angular-animate.min.js'])
+//    .pipe(gulp.dest('./dist/js'));
+//  gulp.src(['./bower_components/angular-loading-bar/build/loading-bar.min.js'])
+//    .pipe(gulp.dest('./dist/js'));
+//  gulp.src(['./bower_components/angular-loading-bar/build/loading-bar.min.css'])
+//    .pipe(gulp.dest('./dist/css'));
+//});
 
 /*gulp.task('copy-scripts', function() {
   gulp.src(['./app/scripts/*.js'])

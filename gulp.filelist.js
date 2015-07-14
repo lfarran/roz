@@ -1,6 +1,6 @@
 var generalAppFiles = [
   "./app/**/*.js",
-  "!./app/directives/pageHeader/*.js",
+  "!./app/app.js",
   "!./app/**/{,*/}*.test.js",
   "!./app/**/{,*/}*.mock.js",
   "!./app/**/{,*/}*.conf.js"
@@ -50,8 +50,7 @@ module.exports = {
 
   template_src: function() {
     return [
-      './app/**/*.html',
-      "!./app/directives/pageHeader/*.html"
+      './app/**/*.html'
     ];
   }
 

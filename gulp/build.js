@@ -23,12 +23,12 @@ gulp.task('js:lib', function () {
 gulp.task('js:app', ['js:lint'], function () {
 
 
-  gulp.src(files.app_files())
-    .pipe(plugins.ngAnnotate())
-    .pipe(plugins.concatSourcemap("app.js", {
-      sourceRoot: "/"
-    }))
-    //.pipe(gulp.dest('dist/js'));
+  //gulp.src(files.app_files())
+  //  .pipe(plugins.ngAnnotate())
+  //  .pipe(plugins.concatSourcemap("app.js", {
+  //    sourceRoot: "/"
+  //  }))
+  //  //.pipe(gulp.dest('dist/js'));
 
   gulp.src(files.app_files())
     .pipe(plugins.uglifyjs('app.min.js', {
@@ -48,45 +48,45 @@ gulp.task('js:app', ['js:lint'], function () {
  * generates AngularJS modules, which pre-load your HTML code into the $templateCache.
  * This way AngularJS doesn't need to request the actual HTML files anymore
  */
-gulp.task('js:html2js', function () {
-
-  gulp.src(['dist/js/templates.js, dist/js/templates.min.js'], { read: false })
-  //.pipe(plugins.clean());
-
-  var htmlStream = gulp.src(files.template_src())
-    .pipe(plugins.minifyHtml({
-      empty: true,
-      spare: true,
-      quotes: true
-    }))
-    .pipe(plugins.ngHtml2js({
-      moduleName: "lbf.templates",
-      declareModule: false,
-      rename: function (url) {
-        var paths = url.split('/');
-        var fileName = paths[paths.length - 1];
-        return fileName;//.replace('.html', '');
-      }
-      //prefix: "/App/"
-    }))
-    .pipe(plugins.concat("templates.js"))
-    .pipe(plugins.insert.prepend("angular.module('lbf.templates', []);"));
-
-
-  //htmlStream.pipe(gulp.dest("./dist/js"));
-
-  htmlStream.pipe(plugins.uglifyjs('templates.min.js', {
-    outSourceMap: true,
-    output: {
-      source_map: {
-        file: "templates.min.js",
-        root: "/"
-      }
-    }
-  }))
-    .pipe(plugins.duration('js:html2js duration'))
-    .pipe(gulp.dest("./dist/js"));
-});
+//gulp.task('js:html2js', function () {
+//
+//  gulp.src(['dist/js/templates.js, dist/js/templates.min.js'], { read: false })
+//  //.pipe(plugins.clean());
+//
+//  var htmlStream = gulp.src(files.template_src())
+//    .pipe(plugins.minifyHtml({
+//      empty: true,
+//      spare: true,
+//      quotes: true
+//    }))
+//    .pipe(plugins.ngHtml2js({
+//      moduleName: "lbf.templates",
+//      declareModule: false,
+//      rename: function (url) {
+//        var paths = url.split('/');
+//        var fileName = paths[paths.length - 1];
+//        return fileName;//.replace('.html', '');
+//      }
+//      //prefix: "/App/"
+//    }))
+//    .pipe(plugins.concat("templates.js"))
+//    .pipe(plugins.insert.prepend("angular.module('lbf.templates', []);"));
+//
+//
+//  //htmlStream.pipe(gulp.dest("./dist/js"));
+//
+//  htmlStream.pipe(plugins.uglifyjs('templates.min.js', {
+//    outSourceMap: true,
+//    output: {
+//      source_map: {
+//        file: "templates.min.js",
+//        root: "/"
+//      }
+//    }
+//  }))
+//    .pipe(plugins.duration('js:html2js duration'))
+//    .pipe(gulp.dest("./dist/js"));
+//});
 
 // TODO: LBF 4/4/15
 gulp.task('copy-jquery-bandaid', function () {
@@ -94,7 +94,7 @@ gulp.task('copy-jquery-bandaid', function () {
   gulp.src([
     //'./app/js/jquery.js',
     './bower_components/jquery/dist/jquery.min.js',
-    './bower_components/jquery/dist/jquery.min.map',
+    './bower_components/jquery/dist/jquery.min.map'
     //'./app/js/bootstrap.min.js'
   ])
     .pipe(gulp.dest('./dist/js'))
@@ -104,7 +104,7 @@ gulp.task('copy-jquery-bandaid', function () {
 gulp.task('js:all', function () {
   gulp.start('js:lib');
   gulp.start('js:app');
-  gulp.start('js:html2js');
+  //gulp.start('js:html2js');
 });
 
 gulp.task('build', ['clean'], function() {

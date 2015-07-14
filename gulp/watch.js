@@ -11,7 +11,7 @@ gulp.task('watch', ['default'], function () {
   gulp.watch(files.app_files(), ['js:app']);
   gulp.watch(files.css_lib_files(), ['sass:lib']);
   gulp.watch('app/**/*.scss', ['styles:sass']);
-  gulp.watch('app/**/*.html', ['js:html2js']);
+  //gulp.watch('app/**/*.html', ['js:html2js']);
   gulp.watch('app/*.html', ['copy-index-html']);
   gulp.watch('Gulpfile.js', ['js:all', 'styles:all']);
 
