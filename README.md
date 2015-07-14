@@ -1,5 +1,5 @@
 # roz
-Raised On Zenith band website built using AngularJS, Gulp, Bower, and Boostrap-Sass
+Raised On Zenith band website built using Gulp, Bower, and Boostrap-Sass
 
 Install Instructions
  =======
