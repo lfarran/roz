@@ -1,4 +1,6 @@
-
+/**
+ * Created by farranl on 11/19/14.
+ */
 'use strict';
 
 var gulp = require('gulp'),
@@ -15,4 +17,9 @@ gulp.task('js:lint', function () {
     .pipe(plugins.jshint(jshintConfig))
     .pipe(plugins.jshint.reporter(plugins.stylish))
     .pipe(plugins.duration('js:lint duration'));
+});
+
+gulp.task('scss:lint', function() {
+  return gulp.src('./app/styles/sass/**/*.scss')
+    .pipe(plugins.scssLint())
 });

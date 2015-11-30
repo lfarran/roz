@@ -1,11 +1,10 @@
-
 'use strict';
 
-var gulp = require('gulp'),
-    plugins = require('gulp-load-plugins')({camelize: true}),
-    rimraf = require('rimraf');
+var gulp = require('gulp');
+var plugins = require('gulp-load-plugins')({camelize: true});
+var del = require('del');
 
 // Clean
 gulp.task('clean', function (cb) {
-    rimraf('./dist', cb);
+    return del(['./dist'], cb);
 });

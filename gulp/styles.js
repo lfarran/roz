@@ -1,78 +1,52 @@
 
 'use strict';
 
-var gulp = require('gulp'),
-    plugins = require('gulp-load-plugins')({camelize: true}),
-    files = require('./../gulp.filelist.js');
+var gulp = require('gulp');
+var plugins = require('gulp-load-plugins')({camelize: true});
+var files = require('./../gulp.filelist.js');
+var runSequence = require('run-sequence');
 
-/*gulp.task('styles:sass', ['styles:sass:layout', 'styles:sass:themes'], function () {
+
+/*gulp.task('styles:sass', ['styles:sass:layout'], function () {
 });*/
-gulp.task('styles:sass', ['styles:sass:layout'], function () {
-});
 
 /**
  * Convert SASS layout files (styling for sizes, locations, layout, etc.)
  * into an minified app.min.css files for the dist/css build directory
  */
-gulp.task('styles:sass:layout', function () {
+gulp.task('styles:sass:app', function () {
   gulp.src(files.sass_src())
-    // convert SASS into app.css file
-    .pipe(plugins.sass({ style: 'compressed' }))
-    .pipe(plugins.concatSourcemap("app.css", {
-      sourceRoot: "/"
-    }))
-    // minify app.css file
+
+    // Protip: until gulpjs 4.0 is released, you can use gulp-plumber to prevent stops on errors
+    .pipe(plugins.plumber())
+
+    // convert SASS into css file
+    .pipe(plugins.sass({ outputStyle: 'compressed' }).on('error', plugins.sass.logError))
+    .pipe(plugins.autoprefixer().on('error', plugins.sass.logError))
     .pipe(plugins.concat("app.min.css"))
-    .pipe(plugins.minifyCss({ keepBreaks: false }))
+    .pipe(gulp.dest('dist/css'))
 
     // time how long it takes
-    .pipe(plugins.duration('styles:sass:layout duration'))
-
-    // move the output to the dist/css build directory
-    .pipe(gulp.dest('dist/css'));
+    .pipe(plugins.duration('styles:sass:app duration'));
 });
-
-/**
- * Convert SASS theme files related to colors, borders, etc.
- * into a minified theme.min.css file for the dist/css build directory
- */
-gulp.task('styles:sass:themes', function () {
-
-  var themes = ['default', 'light'];
-
-  for (var i = 0; i < themes.length; i++) {
-    gulp.src(files.sass_theme_src(themes[i]))
-      // Convert SASS to {themeName}.theme.css file
-      .pipe(plugins.sass({ style: 'compressed' }))
-      .pipe(plugins.concatSourcemap(themes[i] + ".theme.css", {
-        sourceRoot: "/"
-      }))
-      // minify theme.css file
-      .pipe(plugins.concat(themes[i] + ".theme.min.css"))
-      .pipe(plugins.minifyCss({ keepBreaks: false }))
-
-      // time how long it takes to do this process
-      .pipe(plugins.duration('styles:sass:themes duration'))
-
-      // move the output to the dist/css build directory
-      .pipe(gulp.dest('dist/css'));
-  }
-});
-
 
 /**
  * Convert 3rd party styles into lib.min.css file
  */
-gulp.task('styles:lib', function () {
+/*gulp.task('styles:lib', function () {
   gulp.src(files.css_lib_files())
-    .pipe(plugins.concat("lib.min.css"))
-    .pipe(plugins.minifyCss({ keepBreaks: false }))
-    .pipe(plugins.duration('styles:lib duration'))
-    .pipe(gulp.dest('dist/css'));
-});
 
-gulp.task('styles:all', function () {
-  gulp.start('styles:sass');
-  gulp.start('styles:lib');
-  //gulp.start('copy-bootstrap-bandaid');
+    // Protip: until gulpjs 4.0 is released, you can use gulp-plumber to prevent stops on errors
+    .pipe(plugins.plumber())
+
+    // convert SASS into css file
+    .pipe(plugins.sass({ outputStyle: 'compressed' }).on('error', plugins.sass.logError))
+    .pipe(plugins.concat("lib.min.css"))
+
+    .pipe(gulp.dest('dist/css'))
+    .pipe(plugins.duration('styles:lib duration'));
+});*/
+
+gulp.task('styles:all', function (cb) {
+  runSequence(['styles:sass:app' /*, 'styles:lib'*/], cb);
 });

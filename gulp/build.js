@@ -3,44 +3,20 @@
 var gulp = require('gulp'),
   plugins = require('gulp-load-plugins')({camelize: true}),
   files = require('./../gulp.filelist.js');
+var runSequence = require('run-sequence');
 
 // Js-Libs
 gulp.task('js:lib', function () {
-
-  gulp.src(files.js_lib_src())
-    .pipe(plugins.uglifyjs('lib.min.js', {
-      outSourceMap: true,
-      output: {
-        source_map: {
-          file: "lib.min.js",
-          root: "/"
-        }
-      }
-    }))
+  gulp.src(files.js_lib_src)
+    .pipe(plugins.concat('lib.min.js'))
+    .pipe(plugins.uglify())
     .pipe(gulp.dest('dist/js'));
 });
 
 gulp.task('js:app', ['js:lint'], function () {
-
-
-  //gulp.src(files.app_files())
-  //  .pipe(plugins.ngAnnotate())
-  //  .pipe(plugins.concatSourcemap("app.js", {
-  //    sourceRoot: "/"
-  //  }))
-  //  //.pipe(gulp.dest('dist/js'));
-
-  gulp.src(files.app_files())
-    .pipe(plugins.uglifyjs('app.min.js', {
-      outSourceMap: "app.min.js.map",
-      output: {
-        source_map: {
-          file: "app.min.js",
-          root: "/"
-        }
-      }
-    }))
-    .pipe(plugins.duration('js:app duration'))
+  return gulp.src(files.app_files())
+    .pipe(plugins.concat('app.min.js'))
+    .pipe(plugins.uglify())
     .pipe(gulp.dest('dist/js'));
 });
 
@@ -48,75 +24,93 @@ gulp.task('js:app', ['js:lint'], function () {
  * generates AngularJS modules, which pre-load your HTML code into the $templateCache.
  * This way AngularJS doesn't need to request the actual HTML files anymore
  */
-//gulp.task('js:html2js', function () {
-//
-//  gulp.src(['dist/js/templates.js, dist/js/templates.min.js'], { read: false })
-//  //.pipe(plugins.clean());
-//
-//  var htmlStream = gulp.src(files.template_src())
-//    .pipe(plugins.minifyHtml({
-//      empty: true,
-//      spare: true,
-//      quotes: true
-//    }))
-//    .pipe(plugins.ngHtml2js({
-//      moduleName: "lbf.templates",
-//      declareModule: false,
-//      rename: function (url) {
-//        var paths = url.split('/');
-//        var fileName = paths[paths.length - 1];
-//        return fileName;//.replace('.html', '');
-//      }
-//      //prefix: "/App/"
-//    }))
-//    .pipe(plugins.concat("templates.js"))
-//    .pipe(plugins.insert.prepend("angular.module('lbf.templates', []);"));
-//
-//
-//  //htmlStream.pipe(gulp.dest("./dist/js"));
-//
-//  htmlStream.pipe(plugins.uglifyjs('templates.min.js', {
-//    outSourceMap: true,
-//    output: {
-//      source_map: {
-//        file: "templates.min.js",
-//        root: "/"
-//      }
-//    }
-//  }))
-//    .pipe(plugins.duration('js:html2js duration'))
-//    .pipe(gulp.dest("./dist/js"));
-//});
+gulp.task('js:html2js', function () {
+  var htmlStream = gulp.src(files.template_src())
+    .pipe(plugins.minifyHtml({
+      empty: true,
+      spare: true,
+      quotes: true,
+      comments: true
+    }))
+    .pipe(plugins.ngHtml2js({
+      moduleName: "lbf.templates",
+      declareModule: false,
+      rename: function (url) {
+        var paths = url.split('/');
+        var fileName = paths[paths.length - 1];
+        return fileName;//.replace('.html', '');
+      }
+      //prefix: "/App/"
+    }))
+    .pipe(plugins.concat("templates.js"))
+    .pipe(plugins.insert.prepend("angular.module('lbf.templates', []);"));
 
-// TODO: LBF 4/4/15
-gulp.task('copy-jquery-bandaid', function () {
-  // fonts
-  gulp.src([
-    //'./app/js/jquery.js',
-    './bower_components/jquery/dist/jquery.min.js',
-    './bower_components/jquery/dist/jquery.min.map'
-    //'./app/js/bootstrap.min.js'
-  ])
-    .pipe(gulp.dest('./dist/js'))
-    .pipe(plugins.duration('copy-jquery-bandaid'));
+  return htmlStream.pipe(plugins.concat('templates.min.js'))
+    .pipe(plugins.uglify())
+    .pipe(gulp.dest('dist/js'))
+    .pipe(plugins.duration('js:app.min duration'))
+    .pipe(gulp.dest("./dist/js"))
+    .pipe(plugins.duration('js:html2js duration'));
 });
 
-gulp.task('js:all', function () {
-  gulp.start('js:lib');
-  gulp.start('js:app');
-  //gulp.start('js:html2js');
+gulp.task('js:all', function (cb) {
+  runSequence(['js:lib', 'js:app', 'js:html2js'], cb);
 });
 
-gulp.task('build', ['clean'], function() {
-  gulp.start('npmBower:install');
-  gulp.start('copy-index-html');
-  //gulp.start('copy-angular');
-  //gulp.start('copy-scripts');
-  gulp.start('copy-jquery-bandaid');
+gulp.task('build', ['clean'], function(cb) {
+  runSequence('imagemin', [ 'copy-index-html',
+                            'copy-jquery',
+                            'copy-jquery-easing',
+                            'copy-bootstrap-js',
+                            'copy-fontawesome-css',
+                            'copy-libraries-css',
+                            'copy-libraries-js',
+                            'copy-app-js',
+                            //'js:all',
+                            'styles:all',
+                            'fonts:all'], cb);
+});
 
-  gulp.start('js:all');
-  gulp.start('styles:all');
-  gulp.start('fonts:all');
-  gulp.start('imagemin');
+gulp.task('build-deploy', function(cb) {
+  // compress CSS & JavaScipt files
+  runSequence(['css-gzip', 'js-gzip', 'deploy-image-copy', 'deploy-fonts-copy', 'deploy-index'], cb);
+});
+
+// Gzip files
+gulp.task('css-gzip', function(){
+  return gulp.src('./dist/css/*.css')
+    .pipe(plugins.gzip({ append: false }))
+    .pipe(gulp.dest('./www/css'))
+});
+
+gulp.task('js-gzip', function(){
+  return gulp.src('./dist/js/**/*.js')
+    .pipe(plugins.gzip({ append: false }))
+    .pipe(plugins.duration('js-gzip duration'))
+    .pipe(gulp.dest("./www/js"));
+});
+
+gulp.task('deploy-image-copy', function() {
+  gulp.src(['./dist/images/**/'])
+    .pipe(plugins.duration('deploy-image-copy duration'))
+    .pipe(gulp.dest('./www/images'));
+});
+
+gulp.task('deploy-fonts-copy', function() {
+  gulp.src(['./dist/fonts/**/'])
+    .pipe(plugins.duration('deploy-fonts-copy duration'))
+    .pipe(gulp.dest('./www/fonts'));
+});
+
+gulp.task('deploy-index', function() {
+  gulp.src(['./dist/index.html'])
+    .pipe(plugins.minifyHtml({
+      empty: true,
+      spare: true,
+      quotes: true,
+      comments: true
+    }))
+    .pipe(plugins.duration('deploy-index duration'))
+    .pipe(gulp.dest('./www/'));
 });
 

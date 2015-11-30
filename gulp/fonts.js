@@ -3,6 +3,7 @@
 var gulp = require('gulp'),
     plugins = require('gulp-load-plugins')({camelize: true}),
     files = require('./../gulp.filelist.js');
+var runSequence = require('run-sequence');
 
 gulp.task('fonts:fontawesome', function () {
   // fonts
@@ -25,7 +26,6 @@ gulp.task('fonts:bootstrap', function() {
   .pipe(gulp.dest('./dist/fonts'));
 });
 
-gulp.task('fonts:all', function () {
-  gulp.start('fonts:fontawesome');
-  gulp.start('fonts:bootstrap');
+gulp.task('fonts:all', function (cb) {
+  runSequence(['fonts:fontawesome', 'fonts:bootstrap'], cb);
 });

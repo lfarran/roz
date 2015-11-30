@@ -4,7 +4,7 @@
   "authors": [
     "Luke Farran"
   ],
-  "description": "Personal website that utilizes AngularJS, Gulp, Bower, Bootstrap, and SASS",
+  "description": "Band website for Raised On Zenith",
   "keywords": [
     "Luke Farran",
     "AngularJS",
@@ -13,7 +13,7 @@
     "SASS"
   ],
   "license": "MIT",
-  "homepage": "lukefarran.com",
+  "homepage": "raisedonzenith.com",
   "ignore": [
     "**/.*",
     "node_modules",
@@ -23,11 +23,10 @@
   ],
   "devDependencies": {
     "bootstrap-sass": "~3.3.4",
-    "fontawesome": "~4.3.0",
+    "fontawesome": "~4.4.0",
     "jquery.easing": "~1.3.1",
     "jqBootstrapValidation": "~1.3.7",
     "classie": "~1.0.1"
   },
-  "dependencies": {
-  }
+  "dependencies": {}
 }
